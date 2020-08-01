@@ -1,0 +1,72 @@
+language: rust
+
+matrix:
+
+  allow_failures:
+   - rust: nightly
+  fast_finish: true
+
+  include:
+    - name: cargo fmt
+      os: linux
+      rust: stable
+      env: CI_STAGE_CARGO_FMT=yes
+      before_script:
+       - rustup component add rustfmt
+
+    - name: cargo test (stable)
+      os: linux
+      rust: stable
+      env: CI_STAGE_CARGO_TEST=yes
+
+    - name: cargo build --release (stable)
+      os: linux
+      rust: stable
+      env: CI_STAGE_BUILD_RELEASE=yes
+
+    - name: cargo test (nightly)
+      os: linux
+      rust: nightly
+      env: CI_STAGE_CARGO_TEST=yes
+
+    - name: cargo build --release (nightly)
+      os: linux
+      rust: nightly
+      env: CI_STAGE_BUILD_RELEASE=yes
+
+    - name: cargo test (stable, windows)
+      os: windows
+      rust: stable
+      env: CI_STAGE_CARGO_TEST=yes
+
+    - name: cargo build --release (stable, windows)
+      os: windows
+      rust: stable
+      env: CI_STAGE_BUILD_RELEASE=yes
+
+    - name: cargo test (nightly, windows)
+      os: windows
+      rust: nightly
+      env: CI_STAGE_CARGO_TEST=yes
+
+    - name: cargo build --release (nightly, windows)
+      os: windows
+      rust: nightly
+      env: CI_STAGE_BUILD_RELEASE=yes
+
+script:
+  - if [[ "$CI_STAGE_CARGO_FMT" == "yes" ]]; then
+      cargo fmt --all -- --check;
+    fi
+
+  - if [[ "$CI_STAGE_CARGO_TEST" == "yes" ]]; then
+      cargo test --all;
+      cargo test --all --no-default-features;
+      cargo test --all --all-features;
+    fi
+
+  - if [[ "$CI_STAGE_BUILD_RELEASE" == "yes" ]]; then
+      cargo build --release;
+      cargo build --no-default-features;
+      cargo build --release --all-features;
+    fi
