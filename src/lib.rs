@@ -11,7 +11,9 @@
 //! assert_eq!(I32F32::from_num(8.0), x.powf(I32F32::from_num(1.5)));
 //! ```
 
-use std::cmp::{Ord, Ordering};
+#![no_std]
+
+use core::cmp::{Ord, Ordering};
 
 use fixed::traits::Fixed;
 use fixed::types::extra::{LeEqU128, LeEqU16, LeEqU32, LeEqU64, LeEqU8};
@@ -113,7 +115,8 @@ where
             pow2 <<= 1;
         }
 
-        result = pow2 >> 1;
+        result = pow2;
+        result >>= 1;
     }
 
     for _ in 0..T::NUM_BITS {
@@ -130,7 +133,7 @@ where
 fn powf_01<T>(mut x: T, n: T) -> T
 where
     T: Fixed + Helper,
-    T::Bits: PrimInt + std::fmt::Debug,
+    T::Bits: PrimInt + core::fmt::Debug,
 {
     let mut n = n.to_bits();
     if n.is_zero() {
@@ -158,7 +161,7 @@ where
 fn powf_positive<T>(x: T, n: T) -> T
 where
     T: Fixed + Helper,
-    T::Bits: PrimInt + std::fmt::Debug,
+    T::Bits: PrimInt + core::fmt::Debug,
 {
     assert!(Helper::is_positive(n), "exponent should be positive");
 
