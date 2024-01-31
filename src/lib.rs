@@ -237,7 +237,6 @@ impl_fixed_pow!(FixedU128, LeEqU128, U127);
 trait Helper {
     const NUM_BITS: u32;
     fn is_positive(self) -> bool;
-    fn is_zero(self) -> bool;
     fn is_one(self) -> bool;
     fn one() -> Self;
     fn neg(self) -> Self;
@@ -252,9 +251,6 @@ macro_rules! impl_sign_helper {
             const NUM_BITS: u32 = <Self as Fixed>::INT_NBITS + <Self as Fixed>::FRAC_NBITS;
             fn is_positive(self) -> bool {
                 $fixed::is_positive(self)
-            }
-            fn is_zero(self) -> bool {
-                self.to_bits() == 0
             }
             fn is_one(self) -> bool {
                 <LeEq<Frac, $le_eq_one>>::BOOL && self.to_bits() == 1 << Frac::U32
@@ -279,9 +275,6 @@ macro_rules! impl_sign_helper {
             const NUM_BITS: u32 = <Self as Fixed>::INT_NBITS + <Self as Fixed>::FRAC_NBITS;
             fn is_positive(self) -> bool {
                 self != Self::from_bits(0)
-            }
-            fn is_zero(self) -> bool {
-                self.to_bits() == 0
             }
             fn is_one(self) -> bool {
                 <LeEq<Frac, $le_eq_one>>::BOOL && self.to_bits() == 1 << Frac::U32
